@@ -117,6 +117,12 @@ class TestPathHelpers:
 
     def test_integration_with_docstring_introspection(self, app, spec):
 
+        def success_helper(spec, **kwargs):
+            print(kwargs)
+            return {'description': 'lol'}
+
+        spec.register_response_helper(success_helper, 'post', 200)
+
         @app.route('/hello')
         def hello():
             """A greeting endpoint.
@@ -154,6 +160,8 @@ class TestPathHelpers:
         assert post_op['description'] == 'post a greeting'
         assert 'foo' not in spec._paths['/hello']
         assert extension == 'value'
+
+        print(post_op)
 
     def test_path_is_translated_to_swagger_template(self, app, spec):
 
